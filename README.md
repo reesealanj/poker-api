@@ -1,7 +1,7 @@
 # PHP API
 This repo serves as the home for my development of the PHP REST API for my Internet of Things course Final Project. The goal of the project was to learn how to create a REST API from scratch built in php and connect it with a PHP built client application using GuzzleHttp on the front end for making HTTP requests.
 
-### Contents
+## Contents
    - [ ] Server
         - [ ] API
    - [ ] Client
