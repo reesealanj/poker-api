@@ -4,6 +4,7 @@ This repo serves as the home for my development of the PHP REST API for my Inter
 ## Contents
    - [ ] Server
         - [ ] API
+        - [ ] Keys/PWs with Environment Variables
    - [ ] Client
         - [ ] Front Facing Application
         - [ ] GuzzleHTTP Integration
