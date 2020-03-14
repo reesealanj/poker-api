@@ -9,7 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../../config/Database.php';
 include_once '../../models/Users.php';
 
-// Create db instance/connection and product object
+// Create db instance/connection and product obj
 $database = new Database();
 $db = $database->getConnection();
 $user = new Users($db);
