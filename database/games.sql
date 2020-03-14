@@ -1,6 +1,6 @@
 CREATE TABLE games (
     game_id INT(6) zerofill NOT NULL AUTO_INCREMENT,
-	session_id INT(32) NOT NULL,
+	session_id VARCHAR(32) NOT NULL,
 	user_id INT(6) NOT NULL,
 	comm_1 VARCHAR(2) DEFAULT NULL,
 	comm_2 VARCHAR(2) DEFAULT NULL,
