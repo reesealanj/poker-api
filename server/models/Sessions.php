@@ -16,7 +16,7 @@ class Sessions {
 
     function start() {
         // if created_by user has active session prevent them from making a new one.
-        if($this->checkSessionState()){
+        if($this->checkUserSessionState()){
             return false;
         }
         $query = "INSERT INTO " . $this->table_name . "
@@ -57,14 +57,14 @@ class Sessions {
         return $hex;
     }
     // check whether current user (created_by) has an active session
-    function checkSessionState() {
+    function checkUserSessionState() {
         $query = "SELECT * FROM " . $this->user_table . " WHERE id=:user_id";
 
         try {
             $stmt = $this->conn->prepare($query);
 
             if($stmt) {
-                $this->created_by = htmlspecialchars(strip_tags($this->created_by));
+                $this->created_by = $this->sanitize($this->created_by);
                 $stmt->bindParam(":user_id", $this->created_by);
             }
 
@@ -79,5 +79,40 @@ class Sessions {
         } catch (PDOException $e) {
             echo "DB Problem: " . $e->getMessage();
         }
+    }
+
+    // check whether a session is active
+    public function validateSessionState($session_id) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE session_id=:session_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $session_id = $this->sanitize($session_id);
+                $stmt->bindParam(":session_id", $session_id); 
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($row['active'] == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function sanitize($input) {
+        return htmlspecialchars(strip_tags($input));
     }
 }

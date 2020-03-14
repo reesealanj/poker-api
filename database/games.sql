@@ -1,14 +1,7 @@
 CREATE TABLE games (
-    game_id INT(6) zerofill NOT NULL AUTO_INCREMENT,
+    game_id  VARCHAR(32) zerofill NOT NULL AUTO_INCREMENT,
 	session_id VARCHAR(32) NOT NULL,
-	user_id INT(6) NOT NULL,
-	comm_1 VARCHAR(2) DEFAULT NULL,
-	comm_2 VARCHAR(2) DEFAULT NULL,
-	comm_3 VARCHAR(2) DEFAULT NULL,
-	comm_4 VARCHAR(2) DEFAULT NULL,
-	comm_5 VARCHAR(2) DEFAULT NULL,
-	hand_1 VARCHAR(2) DEFAULT NULL,
-	hand_2 VARCHAR(2) DEFAULT NULL,
+	hand_id VARCHAR(32),
 	is_active INT(1) DEFAULT '0',
 	PRIMARY KEY (game_id)
 );

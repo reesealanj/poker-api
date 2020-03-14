@@ -30,7 +30,7 @@ if (
         $id = $test_user->getIDFromUser();
         $session->created_by = $id;
 
-        if($session->checkSessionState()) {
+        if($session->checkUserSessionState()) {
             // User already has session, code 409 - conflict
             http_response_code(409);
             echo json_encode(array("message" => "Unable to start Session", "issue" => "User already has active session!"));
