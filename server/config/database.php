@@ -1,7 +1,5 @@
 <?php
-
 class Database {
-
 	// DB Credentials 
 	// TODO make these env variables
 	private $host = "localhost";
@@ -24,5 +22,4 @@ class Database {
 		return $this->conn;
 	}
 }
-
 ?>
