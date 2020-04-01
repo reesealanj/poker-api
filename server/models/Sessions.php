@@ -112,6 +112,84 @@ class Sessions {
         }
     }
 
+    public function authValidateSession($session, $password) {
+        /* 1. Check whether session exists
+        *  2. Check whether session is active
+        *  3. Check which user session is bound to
+        *  4. verify that the user bound to session has a password of $password
+        */
+
+        $query = "SELECT * FROM " . $this->table_name . " WHERE session_id=:session_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $sess_input = $this->sanitize($session);
+                $stmt->bindParam(":session_id", $sess_input);
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $rows = $stmt->rowCount();
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($rows > 0) {
+                    $user_id = $data['created_by'];
+                    $query = "SELECT * FROM " . $this->user_table . " WHERE id=:user_id";
+                    try{
+                        $stmt = $this->conn->prepare($query);
+                        if($stmt) {
+                            $stmt->bindParam(":user_id", $user_id);
+                        }
+                        $result = $stmt->execute();
+                        if($result) {
+                            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $pw_hash = $row['password'];
+                            if(password_verify($password, $pw_hash)){
+                                return true;
+                            } 
+                            return false;
+                        } else {
+                            $error = $stmt->errorInfo();
+                            echo "Query Failed: " . $error[2] . "\n";
+                            return false;
+                        }
+                    } catch (PDOException $e) {
+                        echo "DB Problem: " . $e->getMessage();
+                        return false;
+                    }
+                } 
+                return false;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage(); 
+        }
+    }
+
+    public function status($reqForm) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE session_id=:session_id";
+        
+        $stmt = $this->conn->prepare($query);
+
+        try {
+            if($stmt) {
+                $stmt->bindParam(":session_id", $this->session_id);
+            }
+
+            $result = $stmt->execute(); 
+            if($result) {
+                
+            }
+        } catch (PDOException $e) {
+
+        }
+        return array("form" => $reqForm);
+    }
+    
     function sanitize($input) {
         return htmlspecialchars(strip_tags($input));
     }
