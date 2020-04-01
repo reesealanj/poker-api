@@ -180,7 +180,7 @@ class Users {
     function updateSession($session_id, $status, $user_id) {
         // Remove current session token
         if($status == 0) {
-            if(verifySession($session_id)) {
+            if($this->verifySession($session_id)) {
                 $query = "UPDATE " . $this->table_name . " SET session_active=0, session_id=0 WHERE id=:user_id"; 
 
                 try {    
