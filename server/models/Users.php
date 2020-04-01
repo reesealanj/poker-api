@@ -51,6 +51,29 @@ class Users {
         }   
     }
 
+    function delete() {
+        $query = "DELETE FROM " . $this->table_name . "
+                    WHERE id=:user_id";
+        try {
+            $stmt = $this->conn->prepare($query);
+            
+            if($stmt) {
+                $stmt->bindParam(":user_id", $this->sanitize($this->id));
+            } 
+
+            $stmt->execute;
+            if($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+        }
+    }
+
     function checkUsername($username) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE username=:username";
 
