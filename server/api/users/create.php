@@ -26,15 +26,13 @@ if (
     // Hash plaintext PW for placing in DB
     $hash = password_hash($data->password, PASSWORD_DEFAULT);
     $user->password = $hash;
-    $user->session_active = 0;
-    $user->session_id = 0;
 
     // if username does not exist
     if(!$user->checkUsername($user->username)){
         if($user->create()) {
             // Product was created, code 201 - created
             http_response_code(201);
-            echo json_encode(array("message" => "User created successfully"));
+            echo json_encode(array("message" => "User created successfully", "api_key" => $user->api_key));
         } else {
             // There was an issue pushing to DB code 503 - service unavailable
             http_response_code(503);
