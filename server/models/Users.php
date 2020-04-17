@@ -48,6 +48,7 @@ class Users {
         }
     }
 
+    // Delete the user with the username of the object (no need to check password, has already been verified)
     function delete() {
         $query = "DELETE FROM " . $this->table_name . "
                     WHERE username=:username";
@@ -59,11 +60,18 @@ class Users {
             }
 
             $result = $stmt->execute();
-            if($stmt->rowCount() > 0) {
-                return true;
+            if($result) {
+                if($stmt->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
                 return false;
             }
+            
         } catch (PDOException $e) {
             echo "DB Problem: " . $e->getMessage() . "\n"; 
             return false;
@@ -91,6 +99,8 @@ class Users {
                     return false;
                 }
             } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
                 return false;
             }
         } catch (PDOException $e) {
@@ -102,6 +112,34 @@ class Users {
     // Helper function to sanitize inputs to db
     function sanitize($input) {
         return htmlspecialchars(strip_tags($input));
+    }
+    
+    // Generate and set a new API key for the user
+    function new_key() {
+        $query = "UPDATE" . $this->table_name . "
+                    SET api_key=:api_key WHERE username=:username";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":api_key", $this->generateKey());
+                $stmt->bindParam(":username", $this->username);
+
+                $result = $stmt->execute();
+
+                if($result) {
+                    return true;
+                } else {
+                    $error = $stmt->errorInfo();
+                    echo "Query Failed: " . $error[2] . "\n";
+                    return false;
+                }
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false; 
+        }
     }
 
     // Generates a cryptographically secure API key
@@ -142,6 +180,7 @@ class Users {
             }
         } catch (PDOException $e) {
             echo "DB Problem: " . $e->getMessage();
+            return false;
         }
     }   
 }
