@@ -48,10 +48,63 @@ class Users {
         }
     }
 
+    function delete() {
+        $query = "DELETE FROM " . $this->table_name . "
+                    WHERE username=:username";
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":username", $this->sanitize($this->username));
+            }
+
+            $result = $stmt->execute();
+            if($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage() . "\n"; 
+            return false;
+        }
+    }
+
+    // Verify the current username and password (unhashed) match the hash in the database.
+    function verify() {
+        $query = "SELECT * FROM" . $this->table_name . "
+                    WHERE username=:username";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":username", $this->sanitize($this->username));
+            }
+
+            $result = $stmt->execute();
+            if($stmt->rowCount() > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if(password_verify($this->password, $row['password'])){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Helper function to sanitize inputs to db
     function sanitize($input) {
         return htmlspecialchars(strip_tags($input));
     }
 
+    // Generates a cryptographically secure API key
     function generateKey() {
         $length = 32;
         $cstrong = true;
@@ -62,6 +115,7 @@ class Users {
         return $hex;
     }
 
+    // Check if the inputted username exists within the database
     function checkUsername($username) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE username=:username";
 

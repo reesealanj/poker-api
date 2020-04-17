@@ -23,22 +23,26 @@ if (
 ) {
     // Data is complete, process it
     $user->username = $data->username;
-    // Hash plaintext PW for placing in DB
-    $hash = password_hash($data->password, PASSWORD_DEFAULT);
-    $user->password = $hash;
-    $user->session_active = 0;
-    $user->session_id = 0;
+    $user->password = $password;
 
+    if($user->verify()) {
         if($user->delete()) {
             http_response_code(200);
             echo json_encode(array("message" => "User deleted successfully"));
+            return;
         } else {
             http_response_code(503);
             echo json_encode(array("message" => "Unable to remove User", "issue" => "Database Connection Issue"));
+            return;
         }
+    } else {
+        http_response_code(403);
+        echo json_encode(array("message" => "Unable to remove User", "issue" => "Incorrect Login Details"));
+        return;
+    }
 } else {
-    // Data is not complete -- response 400 bad request
     http_response_code(400);
     echo json_encode(array("message" => "Unable to remove User", "issue" => "Data Incomplete"));
+    return;
 }
 ?>
