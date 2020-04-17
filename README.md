@@ -4,8 +4,7 @@ This repo serves as the home for my development of the PHP REST API for my Inter
 ## Contents
 - [ ] Back-End
      - [ ] API 
-     - [ ] Database/Associated Models
-     
+     - [ ] Database/Associated Models 
 - [ ] Front-End
      - [ ] User Client
      - [ ] Tool for Playing Games

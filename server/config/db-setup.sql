@@ -8,6 +8,7 @@ create table users (
 
 create table games (
     game_id varchar(32) not null,
+    created_by int not null,
     state int(1) default '0',
     scanned_cards int default 0, 
     comm_1 varchar(2), 
