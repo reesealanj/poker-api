@@ -10,14 +10,22 @@ This repo serves as the home for my development of the PHP REST API for my Inter
           - [ ] User Client
           - [ ] Tool for Playing Games
 
-** API Endpoints
-     - [ ] Users
-          - [ ] /users/create/
-          - [ ] /users/delete/
-          - [ ] /users/new-key/
+** API Endpoints - Minimum
+     - [x] Users
+          - [x] /users/create/
+          - [x] /users/delete/
+          - [x] /users/new-key/
      - [ ] Games
           - [ ] /games/start/
           - [ ] /games/end/
           - [ ] /games/push-card/
           - [ ] /games/push-stat/
+
+** API Endpoints - Extra Goals
+     - [ ] Statistics
+          - [ ] /stat/user/
+          - [ ] /stat/games/
+     - Implement Session Tokens
+     - Implement Betting
+
 
