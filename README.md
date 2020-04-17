@@ -10,7 +10,7 @@ This repo serves as the home for my development of the PHP REST API for my Inter
      - [ ] User Client
      - [ ] Tool for Playing Games
 
-** API Endpoints - Minimum
+## API Endpoints - Minimum
  - [x] Users
      - [x] /users/create/
      - [x] /users/delete/
@@ -21,7 +21,7 @@ This repo serves as the home for my development of the PHP REST API for my Inter
      - [ ] /games/push-card/
      - [ ] /games/push-stat/
 
-** API Endpoints - Extra Goals
+## API Endpoints - Extra Goals
 - [ ] Statistics
      - [ ] /stat/user/
      - [ ] /stat/games/
