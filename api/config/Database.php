@@ -5,7 +5,7 @@ class Database {
 	private $host = "localhost";
 	private $db = "pokerdb";
 	private $user = "root";
-	private $pw = "";
+	private $pw = "Blackbelt2!";
 	// Actual Connection Variable
 	public $conn;
 
