@@ -6,10 +6,20 @@ class Games {
 
     // Games Fields
     public $game_id;
-    public $session_id;
-    public $is_active;
-    public $hand_id;
-     
+    public $created_by;
+    public $state; 
+    public $scanned_cards;
+    public $comm_1;
+    public $comm_2;
+    public $comm_3;
+    public $comm_4;
+    public $comm_5;
+    public $hand_1;
+    public $hand_2;
+    public $score;
+    public $odds;
+    public $avg_score;
+
     // Object constructor
     public function __construct($db) {
         $this->conn = $db;

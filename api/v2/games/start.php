@@ -8,16 +8,28 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Including Models and DB
 include_once '../../config/Database.php';
 include_once '../../models/Games.php';
-include_once '../../models/Hand.php';
-include_once '../../models/Sessions.php';
+include_once '../../config/shared.php';
 
 $database = new Database();
 $db = $database->getConnection();
 $game = new Games($db);
-$session = new Sessions($db);
+$user = new Users($db);
 
-$data = json_decode(file_get_contents("php://input"));
+// If there is an API key in the URL
+if(isset($_GET['api_key'])){
+    $key = $_GET['api_key'];
+    // Check if there is an active game for the user assoc. with the key
+    if(!$user->has_game($key)){
+        $game->created_by = $user->fetch_id($key);
+        if($game->create()) {
 
+            // TO IMPLEMENT
+            // In Users: function has_game() and function fetch_id()
+            // In Game: function create()
+
+        }
+    }
+}
 // Session id is present
 if(!empty($data->session_id)) {
     // If session is valid and active
