@@ -8,7 +8,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Including Models and DB
 include_once '../../config/Database.php';
 include_once '../../models/Games.php';
-include_once '../../config/shared.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -22,30 +21,21 @@ if(isset($_GET['api_key'])){
     if(!$user->has_game($key)){
         $game->created_by = $user->fetch_id($key);
         if($game->create()) {
-
-            // TO IMPLEMENT
-            // In Users: function has_game() and function fetch_id()
-            // In Game: function create()
-
-        }
-    }
-}
-// Session id is present
-if(!empty($data->session_id)) {
-    // If session is valid and active
-    if($session->validateSessionState($data->session_id)) {
-        if($game->create()) {
             http_response_code(201);
             echo json_encode(array("message" => "Game Started", "game_id" => $game->game_id));
+            return; 
         } else {
             http_response_code(503);
-            echo json_encode(array("message" => "Unable to start game", "issue" => "Database Connection Issue"));
+            echo json_encode(array("message" => "Unable to Start Game", "issue" => "Database Connection Issue"));
+            return;
         }
     } else {
-        http_response_code(401);
-        echo json_encode(array("message" => "Unable to start Game", "issue" => "Bad Session Token"));
+        http_response_code(409);
+        echo json_encode(array("message" => "Unable to Start Game", "issue" => "Key already has an active game"));
+        return;
     }
 } else {
-    http_response_code(401);
-    echo json_encode(array("message" => "Unable to start Game", "issue" => "Missing Session Token"));
+    http_response_code(400);
+    echo json_encode(array("message" => "Unable to Start Game", "issue" => "No API Key Supplied"));
+    return;
 }

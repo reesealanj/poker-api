@@ -27,23 +27,22 @@ class Games {
 
     function create() {
         $query = "INSERT INTO " . $this->table_name . "
-                    SET game_id=:game_id, session_id=:session_id, is_active=1";
+                    SET game_id=:game_id, created_by=:created_by, state=1";
         
         try {
             $stmt = $this->conn->prepare($query);
 
             if($stmt) {
-                $this->session_id = $this->sanitize($this->session_id);
                 $this->game_id = $this->generateID(); 
 
                 $stmt->bindParam(":game_id", $this->game_id);
-                $stmt->bindParam(":session_id", $this->session_id);
+                $stmt->bindParam(":created_by", $this->created_by);
             }
 
             $result = $stmt->execute();
 
             if($result) {
-                return true;
+                return game_id;
             } else {
                 $error = $stmt->errorInfo();
                 echo "Query Failed: " . $error[2] . "\n";

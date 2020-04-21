@@ -4,6 +4,7 @@ class Users {
     // DB Connection Information
     private $conn; 
     private $table_name = "users";
+    private $game_table = "games";
     // Object Fields
     public $user_id;
     public $username;
@@ -45,6 +46,87 @@ class Users {
             }
         } catch (PDOException $e){
             echo "DB Problem: " . $e->getMessage();
+        }
+    }
+
+    // Check to see if the API key is valid and has an active game
+    function has_game($api_key) {
+        $query = "SELECT * FROM " . $this->table_name . "
+                    WHERE api_key=:api_key";
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":api_key", $this->sanitize($api_key));
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $user_id = $row['user_id'];                
+                $query = "SELECT * FROM " . $this->game_table . "
+                            WHERE created_by=:user_id";
+                try {
+                    $stmt = $this->conn->prepare($query);
+
+                    if($stmt) {
+                        $stmt->bindParam(":user_id", $this->sanitize($user_id));
+                    }
+
+                    $result = $stmt->execute();
+                    if($result) {
+                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                        if($row['state'] == 1){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        $error = $stmt->errorInfo();
+                        echo "Query Failed: " . $error[2] . "\n";
+                        return false;
+                    }
+
+                } catch (PDOException $e) {
+                    echo "DB Problem: " . $e->getMessage();
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Grab the associated user_id for a given API key
+    function fetch_id($api_key) {
+        $query = "SELECT * FROM " . $this->table_name . "
+                    WHERE api_key=:api_key";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":api_key", $this->sanitize($api_key));
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $row['user_id'];
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
         }
     }
 
