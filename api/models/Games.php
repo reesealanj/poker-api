@@ -438,6 +438,31 @@ class Games {
         }
     }
 
+    function end($game_id) {
+        $query = "UPDATE " . $this->table_name . " SET state=0 WHERE game_id=:game_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+
+            if ($result) {
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
     function count_hand($hand_1, $hand_2) {
         $total = 0;
 

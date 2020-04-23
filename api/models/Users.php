@@ -44,7 +44,7 @@ class Users {
                 echo "Query Failed: " . $error[2] . "\n";
                 return false;
             }
-        } catch (PDOException $e){
+        } catch (PDOException $e) {
             echo "DB Problem: " . $e->getMessage();
             return false;
         }
