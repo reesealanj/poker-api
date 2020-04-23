@@ -3,8 +3,8 @@ This repo serves as the home for my development of the PHP REST API for my Inter
 
 ## Contents
 - [ ] Back-End
-     - [ ] API 
-     - [ ] Database/Associated Models 
+     - [x] API 
+     - [x] Database/Associated Models 
 - [ ] Front-End
      - [ ] User Client
      - [ ] Tool for Playing Games
@@ -15,18 +15,10 @@ This repo serves as the home for my development of the PHP REST API for my Inter
      - [x] /users/delete/
      - [x] /users/new-key/
 - [ ] Games
-     - [ ] /games/start/
-     - [ ] /games/end/
-     - [ ] /games/push-card/
-     - [ ] /games/push-stat/
+     - [x] /games/start/
+     - [x] /games/end/
+     - [x] /games/push-card/
+     - [x] /games/push-stat/
 
-## API Endpoints - Extra Goals
-- [ ] Statistics
-     - [ ] /stat/user/
-     - [ ] /stat/games/
-- [ ] Implement Session Tokens
-- [ ] Implement Betting
-
-## test
 
 
