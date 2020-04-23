@@ -8,32 +8,35 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Including Models and DB
 include_once '../../config/Database.php';
 include_once '../../models/Games.php';
-include_once '../../models/Hand.php';
-include_once '../../models/Sessions.php';
+include_once '../../models/Users.php';
 
 $database = new Database();
 $db = $database->getConnection();
 $game = new Games($db);
-$session = new Sessions($db);
+$user = new Users($db);
 
-$data = json_decode(file_get_contents("php://input"));
-
-// Session id is present
-if(!empty($data->session_id)) {
-    // If session is valid and active
-    if($session->validateSessionState($data->session_id)) {
+// If there is an API key in the URL
+if(isset($_GET['api_key'])){
+    $key = $_GET['api_key'];
+    // Check if there is an active game for the user assoc. with the key
+    if(!$user->has_game($key)){
+        $game->created_by = $user->fetch_id($key);
         if($game->create()) {
             http_response_code(201);
             echo json_encode(array("message" => "Game Started", "game_id" => $game->game_id));
+            return; 
         } else {
             http_response_code(503);
-            echo json_encode(array("message" => "Unable to start game", "issue" => "Database Connection Issue"));
+            echo json_encode(array("message" => "Unable to Start Game", "issue" => "Database Connection Issue"));
+            return;
         }
     } else {
-        http_response_code(401);
-        echo json_encode(array("message" => "Unable to start Game", "issue" => "Bad Session Token"));
+        http_response_code(409);
+        echo json_encode(array("message" => "Unable to Start Game", "issue" => "Key already has an active game"));
+        return;
     }
 } else {
-    http_response_code(401);
-    echo json_encode(array("message" => "Unable to start Game", "issue" => "Missing Session Token"));
+    http_response_code(400);
+    echo json_encode(array("message" => "Unable to Start Game", "issue" => "No API Key Supplied"));
+    return;
 }

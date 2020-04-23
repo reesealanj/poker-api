@@ -26,19 +26,26 @@ if (
     // Hash plaintext PW for placing in DB
     $hash = password_hash($data->password, PASSWORD_DEFAULT);
     $user->password = $hash;
-    $user->session_active = 0;
-    $user->session_id = 0;
 
-        if($user->delete()) {
-            http_response_code(200);
-            echo json_encode(array("message" => "User deleted successfully"));
+    // if username does not exist
+    if(!$user->checkUsername($user->username)){
+        if($user->create()) {
+            // Product was created, code 201 - created
+            http_response_code(201);
+            echo json_encode(array("message" => "User created successfully", "api_key" => $user->api_key));
         } else {
+            // There was an issue pushing to DB code 503 - service unavailable
             http_response_code(503);
-            echo json_encode(array("message" => "Unable to remove User", "issue" => "Database Connection Issue"));
+            echo json_encode(array("message" => "Unable to create User", "issue" => "Database Connection Issue"));
         }
+    } else {
+        http_response_code(406);
+        echo json_encode(array("message" => "Unable to create User", "issue" => "Username Taken"));
+    }
+    
 } else {
     // Data is not complete -- response 400 bad request
     http_response_code(400);
-    echo json_encode(array("message" => "Unable to remove User", "issue" => "Data Incomplete"));
+    echo json_encode(array("message" => "Unable to create User", "issue" => "Data Incomplete"));
 }
 ?>
