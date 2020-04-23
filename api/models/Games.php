@@ -463,6 +463,68 @@ class Games {
         }
     }
 
+    function populate_data($game_id) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE game_id=:game_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+
+            if ($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->game_id = $game_id;
+                $this->created_by = $row['created_by'];
+                $this->state = $row['state'];
+                $this->scanned_cards = $row['scanned_cards'];
+                $this->comm_1 = $row['comm_1'];
+                $this->comm_2 = $row['comm_2'];
+                $this->comm_3 = $row['comm_3'];
+                $this->comm_4 = $row['comm_4'];
+                $this->comm_5 = $row['comm_5'];
+                $this->hand_1 = $row['hand_1'];
+                $this->hand_2 = $row['hand_2'];
+                $this->score = $row['score'];
+                $this->odds = $row['odds'];
+                $this->avg_score = $row['avg_score'];
+
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function data_array() {
+        $data = array (
+            "game_id" => $this->game_id,
+            "created_by" => $this->created_by,
+            "state" => $this->state,
+            "scanned_cards" => $this->scanned_cards,
+            "comm_1" => $this->comm_1,
+            "comm_2" => $this->comm_2,
+            "comm_3" => $this->comm_3,
+            "comm_4" => $this->comm_4,
+            "comm_5" => $this->comm_5,
+            "hand_1" => $this->hand_1,
+            "hand_2" => $this->hand_2,
+            "score" => $this->score,
+            "odds" => $this->odds,
+            "avg_score" => $this->odds,
+        );
+
+        return $data;
+    }
+
     function count_hand($hand_1, $hand_2) {
         $total = 0;
 
