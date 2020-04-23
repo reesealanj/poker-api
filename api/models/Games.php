@@ -72,7 +72,7 @@ class Games {
             $result = $stmt->execute();
             if($result) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($row['is_active'] == 1) {
+                if($row['state'] == 1) {
                     return true;
                 } else {
                     return false;
@@ -134,7 +134,7 @@ class Games {
             if ($result) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $scanned = $row['scanned_cards'];
-                if ($scanned == 7) {
+                if ($scanned >= 7) {
                     return false;
                 }
                 $in_hand = $this->count_hand($row['hand_1'], $row['hand_2']);
@@ -272,6 +272,9 @@ class Games {
             if ($result) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $scan_count = $row['scanned_cards'];
+                if ($scan_count >= 7) {
+                    return false;
+                }
 
                 if (($row['hand_1'] != "NC") && ($row['hand_2'] != "NC")) {
                     // Both cards have been filled in, can't push
@@ -343,6 +346,93 @@ class Games {
                 return false;
             }
         } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function push_odds($game_id, $value) {
+        $query = "UPDATE " . $this->table_name . " SET odds=:odds WHERE game_id=:game_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $game_id = $this->sanitize($game_id);
+                $value = $this->sanitize($value);
+
+                $stmt->bindParam(":odds", $value);
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+
+            if ($result) {
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e){
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function push_score($game_id, $value) {
+        $query = "UPDATE " . $this->table_name . " SET score=:score WHERE game_id=:game_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $game_id = $this->sanitize($game_id);
+                $value = $this->sanitize($value);
+
+                $stmt->bindParam(":score", $value);
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+
+            if ($result) {
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e){
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function push_avg($game_id, $value) {
+        $query = "UPDATE " . $this->table_name . " SET avg_score=:avg WHERE game_id=:game_id";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $game_id = $this->sanitize($game_id);
+                $value = $this->sanitize($value);
+
+                $stmt->bindParam(":avg", $value);
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+
+            if ($result) {
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e){
             echo "DB Problem: " . $e->getMessage();
             return false;
         }
