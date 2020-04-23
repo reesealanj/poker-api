@@ -23,7 +23,7 @@ if (
 ) {
     // Data is complete, process it
     $user->username = $data->username;
-    $user->password = $password;
+    $user->password = $data->password;
 
     if($user->verify()) {
         if($user->delete()) {

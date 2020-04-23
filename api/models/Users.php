@@ -46,6 +46,7 @@ class Users {
             }
         } catch (PDOException $e){
             echo "DB Problem: " . $e->getMessage();
+            return false;
         }
     }
 
@@ -112,7 +113,8 @@ class Users {
             $stmt = $this->conn->prepare($query);
 
             if($stmt) {
-                $stmt->bindParam(":api_key", $this->sanitize($api_key));
+                $api_key = $this->sanitize($api_key);
+                $stmt->bindParam(":api_key", $api_key);
             }
 
             $result = $stmt->execute();
@@ -162,7 +164,7 @@ class Users {
 
     // Verify the current username and password (unhashed) match the hash in the database.
     function verify() {
-        $query = "SELECT * FROM" . $this->table_name . "
+        $query = "SELECT * FROM " . $this->table_name . "
                     WHERE username=:username";
         
         try {
@@ -198,19 +200,22 @@ class Users {
     
     // Generate and set a new API key for the user
     function new_key() {
-        $query = "UPDATE" . $this->table_name . "
+        $query = "UPDATE " . $this->table_name . "
                     SET api_key=:api_key WHERE username=:username";
         
         try {
             $stmt = $this->conn->prepare($query);
 
             if($stmt) {
-                $stmt->bindParam(":api_key", $this->generateKey());
+                $new_key = $this->generateKey();
+
+                $stmt->bindParam(":api_key", $new_key);
                 $stmt->bindParam(":username", $this->username);
 
                 $result = $stmt->execute();
 
                 if($result) {
+                    $this->api_key = $new_key;
                     return true;
                 } else {
                     $error = $stmt->errorInfo();

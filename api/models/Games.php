@@ -1,8 +1,11 @@
 <?php
+//include_once '../config/CardMap.php';
+
 class Games {
     // DB Connection
     private $conn;
     private $table_name = "games";
+    private $user_table = "users";
 
     // Games Fields
     public $game_id;
@@ -85,6 +88,279 @@ class Games {
         }
     }
 
+    function verify($user_id, $game_id) {
+        $query = "SELECT * FROM " . $this->table_name . "
+                    WHERE game_id=:game_id";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $game_id = $this->sanitize($game_id);
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+            if ($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($row['created_by'] == $user_id) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function push_comm($game_id, $card) {
+        $query = "SELECT * FROM " . $this->table_name . " 
+                    WHERE game_id=:game_id";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+            if ($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $scanned = $row['scanned_cards'];
+                if ($scanned == 7) {
+                    return false;
+                }
+                $in_hand = $this->count_hand($row['hand_1'], $row['hand_2']);
+                $query = "";
+                if ($in_hand == 0) {
+                    switch ($scanned) {
+                        case 0:
+                            $query = "UPDATE " . $this->table_name . " SET comm_1=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 1:
+                            $query = "UPDATE " . $this->table_name . " SET comm_2=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 2:
+                            $query = "UPDATE " . $this->table_name . " SET comm_3=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+
+                        case 3:
+                            $query = "UPDATE " . $this->table_name . " SET comm_4=:card, scanned_cards=:scanned WHERE game_id=:game_id"; 
+                            break;
+                        
+                        case 4: 
+                            $query = "UPDATE " . $this->table_name . " SET comm_5=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        default:
+                            $query = "ERROR";
+                            break;
+                    }
+                } else if ($in_hand == 1) {
+                    switch ($scanned) {
+                        case 1:
+                            $query = "UPDATE " . $this->table_name . " SET comm_1=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 2:
+                            $query = "UPDATE " . $this->table_name . " SET comm_2=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 3:
+                            $query = "UPDATE " . $this->table_name . " SET comm_3=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+
+                        case 4:
+                            $query = "UPDATE " . $this->table_name . " SET comm_4=:card, scanned_cards=:scanned WHERE game_id=:game_id"; 
+                            break;
+                        
+                        case 5: 
+                            $query = "UPDATE " . $this->table_name . " SET comm_5=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        default:
+                            $query = "ERROR";
+                            break;
+                    }
+                } else {
+                    switch ($scanned) {
+                        case 2:
+                            $query = "UPDATE " . $this->table_name . " SET comm_1=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 3:
+                            $query = "UPDATE " . $this->table_name . " SET comm_2=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 4:
+                            $query = "UPDATE " . $this->table_name . " SET comm_3=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+
+                        case 5: 
+                            $query = "UPDATE " . $this->table_name . " SET comm_4=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        case 6: 
+                            $query = "UPDATE " . $this->table_name . " SET comm_5=:card, scanned_cards=:scanned WHERE game_id=:game_id";
+                            break;
+                        
+                        default:
+                            $query = "ERROR";
+                            break;
+                    }
+                }
+
+                if ($query == "ERROR") {
+                    return false;
+                }
+
+                try {
+                    $stmt = $this->conn->prepare($query);
+                    
+                    if ($stmt) {
+                        $stmt->bindParam(":game_id", $game_id);
+                        $stmt->bindParam(":card", $this->cardTxt($card));
+                        $new_count = $scanned + 1;
+                        $stmt->bindParam(":scanned", $new_count);
+                    }
+                    
+                    $result = $stmt->execute();
+                    if ($result) {
+                        $this->scanned_cards = $scanned + 1;
+                        return true;
+                    } else {
+                        $error = $stmt->errorInfo();
+                        echo "Query Failed: " . $error[2] . "\n";
+                        return false;
+                    }
+                } catch (PDOException $e) {
+                    echo "DB Problem: " . $e->getMessage();
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function push_hand($game_id, $card) {
+        $query = "SELECT * FROM " . $this->table_name . " 
+                    WHERE game_id=:game_id";
+        //echo $card_map[$card];
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if ($stmt) {
+                $stmt->bindParam(":game_id", $game_id);
+            }
+
+            $result = $stmt->execute();
+            if ($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $scan_count = $row['scanned_cards'];
+
+                if (($row['hand_1'] != "NC") && ($row['hand_2'] != "NC")) {
+                    // Both cards have been filled in, can't push
+                    return false;
+                } else if (($row['hand_1'] != "NC")) {
+                    // first has been filled, push to second
+                    $query = "UPDATE " . $this->table_name . " SET hand_2=:hand_2, scanned_cards=:scanned 
+                                WHERE game_id=:game_id";
+                    
+                    try {
+                        $stmt = $this->conn->prepare($query);
+                        
+                        if ($stmt) {
+                            $stmt->bindParam(":hand_2", $this->cardTxt($card));
+                            $new_count = $scan_count + 1;
+                            $stmt->bindParam(":scanned", $new_count);
+                            $stmt->bindParam(":game_id", $game_id);
+                        }
+
+                        $result = $stmt->execute();
+                        
+                        if ($result) {
+                            $this->scanned_cards = $scan_count + 1;
+                            return true;
+                        } else {
+                            $error = $stmt->errorInfo();
+                            echo "Query Failed: " . $error[2] . "\n";
+                            return false;
+                        }
+
+                    } catch (PDOException $e) {
+                        echo "DB Problem: " . $e->getMessage();
+                        return false;
+                    }
+                } else {
+                    // neither have been filled, push to first
+                    $query = "UPDATE " . $this->table_name . " SET hand_1=:hand_1, scanned_cards=:scanned 
+                    WHERE game_id=:game_id";
+                    
+                    try {
+                        $stmt = $this->conn->prepare($query);
+
+                        if ($stmt) {
+                            $stmt->bindParam(":hand_1", $this->cardTxt($card));
+                            $new_count = $scan_count + 1;
+                            $stmt->bindParam(":scanned", $new_count);
+                            $stmt->bindParam(":game_id", $game_id);
+                        }
+
+                        $result = $stmt->execute();
+
+                        if ($result) {
+                            $this->scanned_cards = $scan_count + 1;
+                            return true;
+                        } else {
+                            $error = $stmt->errorInfo();
+                            echo "Query Failed: " . $error[2] . "\n";
+                            return false;
+                        }
+
+                    } catch (PDOException $e) {
+                        echo "DB Problem: " . $e->getMessage();
+                        return false;
+                    }
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    function count_hand($hand_1, $hand_2) {
+        $total = 0;
+
+        if ($hand_1 != "NC") {
+            $total = $total + 1;
+        }
+        if ($hand_2 != "NC") {
+            $total = $total + 1;
+        }
+
+        return $total;
+    }
+
     function generateID() {
         $length = 10;
         $cstrong = true;
@@ -93,6 +369,64 @@ class Games {
         $hex = bin2hex($bytes);
 
         return $hex;
+    }
+
+    function cardTxt($input) {
+        $card_map = array( 
+            "2C" => 1,
+            "2D" => 2,
+            "2H" => 3,
+            "2S" => 4,
+            "3C" => 5,
+            "3D" => 6,
+            "3H" => 7,
+            "3S" => 8,
+            "4C" => 9,
+            "4D" => 10,
+            "4H" => 11,
+            "4S" => 12,
+            "5C" => 13,
+            "5D" => 14,
+            "5H" => 15,
+            "5S" => 16,
+            "6C" => 17,
+            "6D" => 18,
+            "6H" => 19,
+            "6S" => 20,
+            "7C" => 21,
+            "7D" => 22,
+            "7H" => 23,
+            "7S" => 24,
+            "8C" => 25,
+            "8D" => 26,
+            "8H" => 27,
+            "8S" => 28,
+            "9C" => 29,
+            "9D" => 30,
+            "9H" => 31,
+            "9S" => 32,
+            "TC" => 33,
+            "TD" => 34,
+            "TH" => 35,
+            "TS" => 36,
+            "JC" => 37,
+            "JD" => 38,
+            "JH" => 39,
+            "JS" => 40,
+            "QC" => 41,
+            "QD" => 42,
+            "QH" => 43,
+            "QS" => 44,
+            "KC" => 45,
+            "KD" => 46,
+            "KH" => 47,
+            "KS" => 48,
+            "AC" => 49,
+            "AD" => 50,
+            "AH" => 51,
+            "AS" => 52);
+
+            return array_search($input, $card_map);
     }
 
     function sanitize($input) {

@@ -8,6 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Including Models and DB
 include_once '../../config/Database.php';
 include_once '../../models/Games.php';
+include_once '../../models/Users.php';
 
 $database = new Database();
 $db = $database->getConnection();
