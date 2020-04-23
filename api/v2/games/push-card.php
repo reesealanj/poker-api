@@ -17,7 +17,7 @@ $user = new Users($db);
 
 // example query = {baseurl}/games/push-card.php?api_key=1&game_id=1&type=comm&card=3
 // pushes 2 of hearts as a community card to the active game currently held by api_key with game_id
-if(
+if (
     isset($_GET['api_key']) && 
     isset($_GET['game_id']) &&
     isset($_GET['type']) &&
@@ -25,7 +25,7 @@ if(
 ) {
     $user_id = $user->fetch_id($_GET['api_key']);
 
-    if ($game->verify($user_id, $_GET['game_id'])) {
+    if ($game->verify($user_id, $_GET['game_id']) && $game->validateGameState($_GET['game_id'])) {
         if($_GET['card'] < 1 || $_GET['card'] > 52) {
             http_response_code(400);
             echo json_encode(array("message" => "Unable to Push Card", "issue" => "Invalid Card Number", "valid_nums" => "1-52 (inclusive)"));
