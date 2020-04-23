@@ -20,5 +20,5 @@ This repo serves as the home for my development of the PHP REST API for my Inter
      - [x] /games/push-card/
      - [x] /games/push-stat/
 
-
+## Postman Link to API Collection: https://www.getpostman.com/collections/19c59331b45195c6eec9
 
