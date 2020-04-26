@@ -62,7 +62,7 @@
 			</div>
 		</div>
 		<div class="row justify-content-center my-2">
-			<a href="includes/register.inc.php" class="btn btn-info btn-sm" role="button">New? Claim your account!</a>
+			<a href="includes/register.inc.php" class="btn btn-info btn-sm" role="button">New? Create an account!</a>
 		</div>
 		<div class="row justify-content-center mt-1">
 			<a href="includes/forgot.inc.php" class="btn btn-danger btn-sm" role="button">Forgot your Password?</a>
