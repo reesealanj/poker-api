@@ -40,32 +40,57 @@
 						</form>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col mt-5 mx-5">
-				<div class="errors">
-					<?php
-						if(isset($_GET['error'])){
-							if($_GET['error'] == 1){
-								echo "<h3>You must fill in all fields</h3>";
-							}
-							if($_GET['error'] == 2){
-								echo "<h3>Incorrect Login Details</h3>";
-							}
-							if($_GET['error'] == 3){
-								echo "<h3>User Not Found</h3>";
-							}
-						}
-					?>
+				<div class="row">
+					<div class="col mt-5 mx-5">
+						<div class="errors">
+							<?php
+								if(isset($_GET['e'])){
+									if($_GET['e'] == 1){
+										echo "<div class='alert alert-warning alert-dismissible fade show text-center' role='alert'>
+												<strong>Login Unsucessful</strong> <br />Missing details! Username and Password are required.
+												<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+													<span aria-hidden='true'>&times;</span>
+												</button>
+											</div>";
+									}
+									if($_GET['e'] == 2){
+										echo "<div class='alert alert-danger alert-dismissible fade show text-center' role='alert'>
+												<strong>Login Unsucessful</strong> <br />Username not found! Would you like to <a href='register.php' class='alert-link'>Create an Account?</a>
+												<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+													<span aria-hidden='true'>&times;</span>
+												</button>
+											</div>";
+									}
+									if($_GET['e'] == 3){
+										echo "<div class='alert alert-danger alert-dismissible fade show text-center' role='alert'>
+												<strong>Login Unsucessful</strong> <br />Incorrect Login Information.
+												<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+													<span aria-hidden='true'>&times;</span>
+												</button>
+											</div>";
+									}
+								} if (isset($_GET['l'])) {
+									if ($_GET['l'] == 1) {
+										echo "<div class='alert alert-success alert-dismissible fade show text-center' role='alert'>
+												<strong>You've been Logged Out!</strong>
+												<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+													<span aria-hidden='true'>&times;</span>
+												</button>
+											</div>";
+									}
+								}
+							?>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+		
 		<div class="row justify-content-center my-2">
-			<a href="includes/register.inc.php" class="btn btn-info btn-sm" role="button">New? Create an account!</a>
+			<a href="includes/register.php" class="btn btn-info btn-sm" role="button">New? Create an account!</a>
 		</div>
 		<div class="row justify-content-center mt-1">
-			<a href="includes/forgot.inc.php" class="btn btn-danger btn-sm" role="button">Forgot your Password?</a>
+			<a href="includes/forgot.php" class="btn btn-danger btn-sm" role="button">Forgot your Password?</a>
 		</div>
 	</div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

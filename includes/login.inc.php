@@ -28,7 +28,7 @@
 
             $result = $stmt->execute();
 
-            if ($result) {
+            if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $hash = $row['password'];
 
@@ -39,11 +39,11 @@
                     header("Location: ../home/index.php");
                     exit(); 
                 } else {
-                    header("Location: ../index.php?e=2");
+                    header("Location: ../index.php?e=3");
                     exit();
                 }
             } else {
-                header("Location: ../index.php?e=3");
+                header("Location: ../index.php?e=2");
                 exit();
             }
         } catch (PDOException $e) {
