@@ -36,8 +36,15 @@
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['api_key'] = $row['api_key'];
                     $_SESSION['user_id'] = $row['user_id'];
-                    header("Location: ../home/index.php");
-                    exit(); 
+                    if ($row['is_admin'] == 1) {
+                        $_SESSION['is_admin'] = 1;
+                        header("Location: ../admin/index.php");
+                        exit();
+                    } else {
+                        $_SESSION['is_admin'] = 0;
+                        header("Location: ../home/index.php");
+                        exit();
+                    }
                 } else {
                     header("Location: ../index.php?e=3");
                     exit();

@@ -86,11 +86,8 @@
 			</div>
 		</div>
 		
-		<div class="row justify-content-center my-2">
-			<a href="includes/register.php" class="btn btn-info btn-sm" role="button">New? Create an account!</a>
-		</div>
-		<div class="row justify-content-center mt-1">
-			<a href="includes/forgot.php" class="btn btn-danger btn-sm" role="button">Forgot your Password?</a>
+		<div class="row justify-content-center my-0">
+			<a href="register.php" class="btn btn-info" role="button">New? Create an account!</a>
 		</div>
 	</div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
