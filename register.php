@@ -7,9 +7,17 @@
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
 </head>
 <body>
-	<nav class="navbar navbar-dark bg-dark navbar-expand-sm">
-		<a href="index.php" class="navbar-brand">Poker Odds Calculator</a>
-	</nav>
+		<nav class="navbar navbar-dark bg-dark navbar-expand-sm">
+            <a href="index.php" class="navbar-brand">Poker Odds Calculator</a>
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a href="about.php" class="nav-link">About</a>
+				</li>
+				<li class="nav-item">
+					<a href="https://github.com/gwu-iot/20_casino_royale" target="blank" class="nav-link">Source Code</a>
+				</li>
+			</ul>
+        </nav>
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-6 mt-5 mx-5">
