@@ -162,6 +162,34 @@ class Users {
         }
     }
 
+    function id_delete($user_id) {
+        $query = "DELETE FROM " . $this->table_name . "
+                    WHERE user_id=:user_id";
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":user_id", $this->sanitize($this->user_id));
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                if($stmt->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+            
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage() . "\n"; 
+            return false;
+        }
+    }
     // Verify the current username and password (unhashed) match the hash in the database.
     function verify() {
         $query = "SELECT * FROM " . $this->table_name . "
@@ -270,6 +298,37 @@ class Users {
             return false;
         }
     }   
+
+    function is_admin($api_key) {
+        $query = "SELECT * FROM " . $this->table_name . "
+                    WHERE api_key=:api_key";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $api_key = $this->sanitize($api_key);
+                $stmt->bindParam(":api_key", $api_key);
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($row['is_admin'] == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
 }
 
 ?>
