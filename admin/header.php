@@ -27,4 +27,5 @@ session_start();
 			<button type="submit" class="btn btn-primary btn-sm">
 	          <span class="glyphicon glyphicon-log-out"></span> Log out
 	        </button>
+			</form>
         </nav>
