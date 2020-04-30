@@ -38,7 +38,7 @@
                     $_SESSION['user_id'] = $row['user_id'];
                     if ($row['is_admin'] == 1) {
                         $_SESSION['is_admin'] = 1;
-                        header("Location: ../admin/index.php");
+                        header("Location: ../admin/games.php");
                         exit();
                     } else {
                         $_SESSION['is_admin'] = 0;
