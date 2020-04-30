@@ -10,6 +10,7 @@ class Users {
     public $username;
     public $password;
     public $api_key;
+    public $is_admin;
     
     // Object Constructor
     public function __construct($db) {
@@ -18,7 +19,7 @@ class Users {
 
     function create() {
         $query = "INSERT INTO " . $this->table_name . " 
-                    SET username=:username,password=:password,api_key=:api_key";
+                    SET username=:username,password=:password,api_key=:api_key,is_admin=:admin";
 
         try {
             $stmt = $this->conn->prepare($query);
@@ -33,6 +34,7 @@ class Users {
                 $stmt->bindParam(":username", $this->username);
                 $stmt->bindParam(":password", $this->password);
                 $stmt->bindParam(":api_key", $this->api_key);
+                $stmt->bindParam(":admin", $this->is_admin);
             }
 
             $result = $stmt->execute();
@@ -169,7 +171,7 @@ class Users {
             $stmt = $this->conn->prepare($query);
 
             if($stmt) {
-                $stmt->bindParam(":user_id", $this->sanitize($this->user_id));
+                $stmt->bindParam(":user_id", $this->sanitize($user_id));
             }
 
             $result = $stmt->execute();

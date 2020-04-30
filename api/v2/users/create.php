@@ -26,7 +26,13 @@ if (
     // Hash plaintext PW for placing in DB
     $hash = password_hash($data->password, PASSWORD_DEFAULT);
     $user->password = $hash;
+    $admin = 0;
 
+    if (!empty($data->admin)) {
+        $admin = 1;
+    }
+
+    $user->is_admin = $admin;
     // if username does not exist
     if(!$user->checkUsername($user->username)){
         if($user->create()) {

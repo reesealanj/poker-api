@@ -11,7 +11,7 @@
 					<div class="card-body">
 						<form action="../includes/register-admin.inc.php" method="post">
 							<div class="form-row mt-4">
-								<div class="form-group w-100">
+								<div class="form-group w-50">
 									<label for="username">Set Username</label>
 									<input type="text" class="form-control" name="username" placeholder="Username">
 								</div>
@@ -26,6 +26,12 @@
 									<input type="password" class="form-control" name="reppassword" placeholder="Repeat Password">
 								</div>
 							</div>
+							<div class="form-row mt-4">
+								<div class="form-group w-50">
+										<label for="admin">Is Administrator?</label>
+										<input type="checkbox" class="form-control" name="admin" value="Yes">
+									</div>
+								</div>
 							<div class="form-row mt-4">
 								<div class="form-group col align-self-center my-2">
 									<button type="submit" class="btn btn-success btn-block" name="create-submit">Create Account</button>

@@ -7,6 +7,7 @@
         $username = $_POST['username'];
         $password = $_POST['password'];
         $reppassword = $_POST['reppassword'];
+        $admin = $_POST['admin'];
 
         if (empty($username) || empty($password) || empty($reppassword)) {
             header("Location: ../admin/new-user.php?e=1");
@@ -40,7 +41,8 @@
 
                 $data = array(
                     'username' => $username,
-                    'password' => $password
+                    'password' => $password,
+                    'admin' => $admin
                 );
 
                 $payload = json_encode($data);
@@ -68,6 +70,7 @@
 
             }
         } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
             exit();
         }
     }

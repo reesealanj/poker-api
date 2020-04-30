@@ -75,6 +75,7 @@
 
             }
         } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
             exit();
         }
     }
