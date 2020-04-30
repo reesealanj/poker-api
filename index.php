@@ -11,9 +11,6 @@
             <a href="index.php" class="navbar-brand">Poker Odds Calculator</a>
 			<ul class="navbar-nav">
 				<li class="nav-item">
-					<a href="about.php" class="nav-link">About</a>
-				</li>
-				<li class="nav-item">
 					<a href="https://github.com/gwu-iot/20_casino_royale" target="blank" class="nav-link">Source Code</a>
 				</li>
 			</ul>

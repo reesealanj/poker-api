@@ -257,6 +257,36 @@ class Users {
         }
     }
 
+    function id_new_key($user_id) {
+        $query = "UPDATE " . $this->table_name . "
+        SET api_key=:api_key WHERE user_id=:user_id";
+
+        try {
+        $stmt = $this->conn->prepare($query);
+
+        if($stmt) {
+            $new_key = $this->generateKey();
+
+            $stmt->bindParam(":api_key", $new_key);
+            $stmt->bindParam(":user_id", $user_id);
+
+            $result = $stmt->execute();
+
+            if($result) {
+                $this->api_key = $new_key;
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        }
+        } catch (PDOException $e) {
+        echo "DB Problem: " . $e->getMessage();
+        return false; 
+        }
+    }
+
     // Generates a cryptographically secure API key
     function generateKey() {
         $length = 32;

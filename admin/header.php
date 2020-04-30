@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +13,9 @@
         <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
             <a href="index.php" class="navbar-brand">Poker Odds Calculator</a>
 			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a href="https://github.com/gwu-iot/20_casino_royale" target="blank" class="nav-link">Source Code</a>
+				</li>
 				<li class="nav-item">
 					<a href="games.php" class="nav-link">Games</a>
 				</li>

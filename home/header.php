@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +15,9 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item">
 					<a href="games.php" class="nav-link">Games</a>
+				</li>
+                <li class="nav-item">
+					<a href="https://github.com/gwu-iot/20_casino_royale" target="blank" class="nav-link">Source Code</a>
 				</li>
 			</ul>
             <form method="get" action="../includes/logout.inc.php">	

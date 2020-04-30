@@ -1,30 +1,84 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Poker Odds Calculator</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    	<link rel="stylesheet" type="text/css" href="styles/index.css">
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
-    </head>
-    <body>
-        <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
-            <a href="index.php" class="navbar-brand">Poker Odds Calculator</a>
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<a href="games.php" class="nav-link">Games</a>
-				</li>
-				<li class="nav-item">
-					<a href="users.php" class="nav-link">Users</a>
-				</li>
-			</ul>
-            <form method="get" action="../includes/logout.inc.php">	
-			<button type="submit" class="btn btn-primary btn-sm">
-	          <span class="glyphicon glyphicon-log-out"></span> Log out
-	        </button>
-        </nav>
+<?php
+    include_once('header.php');
+    include_once('../includes/Database.php');
+?>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        
+        <div class="col col-6 align-self-center">
+            <div class="card-header">
+					<nav class="navbar navbar-light bg-light">
+						<a class="navbar-brand"><b>Users</b></a>
+						<a href="new-user.php" class="btn btn-success" role="button">Create New User</a>
+					</nav>
+			</div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col col-12">
+            <div class="card-body">
+                <?php
+                    $table = "";
+                    
+                    $db = new Database();
+                    $conn = $db->getConnection();
 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    </body>
-</html>
+                    $query = "SELECT * FROM users";
+
+                    try {
+                        $stmt = $conn->prepare($query);
+                        $result = $stmt->execute();
+
+                        if ($result) {
+                            $table .= "<div class='container'>
+                                        <div class='table-responsive'>
+                                            <table class='table table-hover'>
+                                                <thead>
+                                                    <tr>
+                                                        <th>User ID</th>
+                                                        <th>Username</th>
+                                                        <th>Admin</th>
+                                                        <th>API Key</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>";
+
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                $admin_word = "";
+                                if ($row['is_admin'] == 1) {
+                                    $admin_word = "Yes";
+                                } else {
+                                    $admin_word = "No";
+                                }
+                                $table .= "
+                                    <tr>
+                                        <td>" . $row['user_id'] . "</td>
+                                        <td>" . $row['username'] . "</td>
+                                        <td>" . $admin_word . "</td>
+                                        <td>" . $row['api_key'] . "</td>
+                                        <td>
+                                            <a class='btn btn-warning btn-sm mx-0 my-1' href='new-key.php?id=" . $row['user_id'] . "' role='button'>New API Key</a>
+                                        </td>
+                                        <td>
+                                            <a class='btn btn-danger btn-sm mx-0 my-1' href='delete-user.php?id=" . $row['user_id'] . "' role='button'>Delete</a>
+                                        </td>
+                                    </tr>
+                                ";
+                            }
+
+                            $table .= "</tbody></table></div></div>";
+                            echo $table;
+                        }
+                    } catch (PDOException $e) {
+                        echo "DB Problem: " . $e->getMessage();
+                        return false;
+                    }
+                ?>
+            </div>
+        </div>
+    </>
+</div>
+<?php
+    include_once('footer.php');
+?>
