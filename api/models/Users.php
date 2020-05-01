@@ -52,6 +52,10 @@ class Users {
         }
     }
 
+    function grab_key() {
+
+    }
+
     // Check to see if the API key is valid and has an active game
     function has_game($api_key) {
         $query = "SELECT * FROM " . $this->table_name . "
@@ -208,6 +212,7 @@ class Users {
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if(password_verify($this->password, $row['password'])){
+                    $this->api_key = $row['api_key'];
                     return true;
                 } else {
                     return false;
