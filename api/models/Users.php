@@ -10,6 +10,7 @@ class Users {
     public $username;
     public $password;
     public $api_key;
+    public $is_admin;
     
     // Object Constructor
     public function __construct($db) {
@@ -18,7 +19,7 @@ class Users {
 
     function create() {
         $query = "INSERT INTO " . $this->table_name . " 
-                    SET username=:username,password=:password,api_key=:api_key";
+                    SET username=:username,password=:password,api_key=:api_key,is_admin=:admin";
 
         try {
             $stmt = $this->conn->prepare($query);
@@ -33,6 +34,7 @@ class Users {
                 $stmt->bindParam(":username", $this->username);
                 $stmt->bindParam(":password", $this->password);
                 $stmt->bindParam(":api_key", $this->api_key);
+                $stmt->bindParam(":admin", $this->is_admin);
             }
 
             $result = $stmt->execute();
@@ -162,6 +164,34 @@ class Users {
         }
     }
 
+    function id_delete($user_id) {
+        $query = "DELETE FROM " . $this->table_name . "
+                    WHERE user_id=:user_id";
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $stmt->bindParam(":user_id", $this->sanitize($user_id));
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                if($stmt->rowCount() > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+            
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage() . "\n"; 
+            return false;
+        }
+    }
     // Verify the current username and password (unhashed) match the hash in the database.
     function verify() {
         $query = "SELECT * FROM " . $this->table_name . "
@@ -229,6 +259,36 @@ class Users {
         }
     }
 
+    function id_new_key($user_id) {
+        $query = "UPDATE " . $this->table_name . "
+        SET api_key=:api_key WHERE user_id=:user_id";
+
+        try {
+        $stmt = $this->conn->prepare($query);
+
+        if($stmt) {
+            $new_key = $this->generateKey();
+
+            $stmt->bindParam(":api_key", $new_key);
+            $stmt->bindParam(":user_id", $user_id);
+
+            $result = $stmt->execute();
+
+            if($result) {
+                $this->api_key = $new_key;
+                return true;
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        }
+        } catch (PDOException $e) {
+        echo "DB Problem: " . $e->getMessage();
+        return false; 
+        }
+    }
+
     // Generates a cryptographically secure API key
     function generateKey() {
         $length = 32;
@@ -270,6 +330,37 @@ class Users {
             return false;
         }
     }   
+
+    function is_admin($api_key) {
+        $query = "SELECT * FROM " . $this->table_name . "
+                    WHERE api_key=:api_key";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+
+            if($stmt) {
+                $api_key = $this->sanitize($api_key);
+                $stmt->bindParam(":api_key", $api_key);
+            }
+
+            $result = $stmt->execute();
+            if($result) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($row['is_admin'] == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $error = $stmt->errorInfo();
+                echo "Query Failed: " . $error[2] . "\n";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "DB Problem: " . $e->getMessage();
+            return false;
+        }
+    }
 }
 
 ?>

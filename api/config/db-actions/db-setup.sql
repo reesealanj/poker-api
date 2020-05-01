@@ -3,6 +3,7 @@ create table users (
     username varchar(32) not null, 
     password varchar(128) not null,
     api_key varchar(64) not null,
+    is_admin int(1) default '0',
     primary key (user_id)
 );
 

@@ -1,27 +1,21 @@
 <?php 
-    session_start();
-
-    if (isset($_SESSION['api_key'])) {
-        header("Location: ../home/index.php");
-        exit();
-    }
-
     include_once('Database.php');
     $database = new Database();
     $conn = $database->getConnection();
 
-    if (isset($_POST['claim-submit'])) {
+    if (isset($_POST['create-submit'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];
         $reppassword = $_POST['reppassword'];
+        $admin = $_POST['admin'];
 
         if (empty($username) || empty($password) || empty($reppassword)) {
-            header("Location: ../register.php?e=1");
+            header("Location: ../admin/new-user.php?e=1");
             exit();
         }
 
         if ($password != $reppassword) {
-            header("Location: ../register.php?e=3");
+            header("Location: ../admin/new-user.php?e=3");
             exit();
         }
 
@@ -38,7 +32,7 @@
             $result = $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
-                header("Location: ../register.php?e=2");
+                header("Location: ../admin/new-user.php?e=2");
                 exit();
             } else {
                 // Execute post request for creating a user
@@ -47,7 +41,8 @@
 
                 $data = array(
                     'username' => $username,
-                    'password' => $password
+                    'password' => $password,
+                    'admin' => $admin
                 );
 
                 $payload = json_encode($data);
@@ -62,7 +57,7 @@
                 if (!curl_errno($ch)) {
                     $result_decoded = json_decode($result, true);
                     curl_close($ch);
-                    header("Location: ../register.php?c=1");
+                    header("Location: ../admin/new-user.php?c=1");
                     exit();
                 } else {
                     echo "Error";
