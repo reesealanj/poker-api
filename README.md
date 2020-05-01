@@ -6,8 +6,8 @@ This repo serves as the home for my development of the PHP REST API for my Inter
      - [x] API 
      - [x] Database/Associated Models 
 - [ ] Front-End
-     - [ ] User Client
-     - [ ] Tool for Playing Games
+     - [x] User Client
+     - [x] Tool for Playing Games
 
 ## API Endpoints - Minimum
  - [x] Users
