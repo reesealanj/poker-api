@@ -21,7 +21,7 @@ if(isset($_GET['api_key'])){
     // Check if there is an active game for the user assoc. with the key
     if(!$user->has_game($key)){
         $game->created_by = $user->fetch_id($key);
-        if($game->create()) {
+        if($game->create($user->fetch_id($key))) {
             http_response_code(201);
             echo json_encode(array("message" => "Game Started", "game_id" => $game->game_id));
             return; 

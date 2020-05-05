@@ -28,7 +28,7 @@ class Games {
         $this->conn = $db;
     }
 
-    function create() {
+    function create($id) {
         $query = "INSERT INTO " . $this->table_name . "
                     SET game_id=:game_id, created_by=:created_by, state=1";
         
@@ -39,7 +39,7 @@ class Games {
                 $this->game_id = $this->generateID(); 
 
                 $stmt->bindParam(":game_id", $this->game_id);
-                $stmt->bindParam(":created_by", $this->created_by);
+                $stmt->bindParam(":created_by", $id);
             }
 
             $result = $stmt->execute();
