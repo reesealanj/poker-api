@@ -24,6 +24,7 @@ if (
     if ($game->verify($user_id, $_GET['game_id'])) {
         if ($game->populate_data($_GET['game_id'])) {
             $data = $game->data_array();
+            http_response_code(200);
             echo json_encode($data);
             return;
         } else {
