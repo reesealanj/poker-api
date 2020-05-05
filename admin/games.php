@@ -3,6 +3,17 @@
     include_once('../includes/Database.php');
 ?>
 <div class="container-fluid">
+<div class="row justify-content-center">
+        
+        <div class="col col-6 align-self-center">
+            <div class="card-header">
+					<nav class="navbar navbar-light bg-light">
+						<a class="navbar-brand"><b>Games</b></a>
+						<a href="new-game.php?id=<?php echo $_SESSION['api_key']; ?>" class="btn btn-success" role="button">Create New Game</a>
+					</nav>
+			</div>
+        </div>
+        </div>s
 
         <div class="row justify-content-center">
         <div class="col col-12">
@@ -53,7 +64,18 @@
                                         <td>" . $state_word . "</td>
                                         <td>
                                             <a class='btn btn-warning btn-sm mx-0 my-1' href='view-game.php?id=" . $row['game_id'] . "' role='button'>Details</a>
-                                        </td
+                                        </td>";
+                                if($row['state'] == 1) {
+                                    $table .= "
+                                            <td>
+                                                <a class='btn btn-warning btn-sm mx-0 my-1' href='end-game.php?id=" . $row['game_id'] . "' role='button'>End Game</a>
+                                            </td>";
+                                } else {
+                                    $table .= "<td>
+                                                <a class='btn btn-danger btn-sm mx-0 my-1' href='delete-game.php?id=" . $row['game_id'] . "' role='button'>Delete</a>
+                                                </td>";
+                                }
+                                $table .="  
                                     </tr>
                                 ";
                             }
